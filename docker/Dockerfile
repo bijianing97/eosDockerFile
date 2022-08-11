@@ -3,7 +3,10 @@ LABEL version = "1.0" description = "Dockerfile for building a mandel eos with h
 
 ENV WORK_PATH /usr/local
 
-RUN apt update && apt upgrade -y && apt install -y \
+RUN apt update && apt upgrade -y && 
+        DEBIAN_FRONTEND=noninteractive \
+        TZ=Asia/Singapore           \
+        apt install -y              \
         build-essential             \
         cmake                       \
         curl                        \
@@ -22,7 +25,7 @@ RUN cd $WORK_PATH && git clone https://github.com/bijianing97/mandel.git \
         && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release ..\
         && make -j$(nproc) package 
 
-ARG snapshot_url = https://snapshots-cdn.eossweden.org/main/2.0/snapshot-262010746.bin.tar.gz
+ARG snapshot_url=https://snapshots-cdn.eossweden.org/main/2.0/snapshot-262010746.bin.tar.gz
 
 RUN  cd $WORK_PATH && cp $WORK_PATH/mandel/build/programs/nodeos $WORK_PATH    \
         && wget $WORK_PATH ${snapshot_url} -O $WORK_PATH/snapshot.bin.tar.gz   \
@@ -33,10 +36,10 @@ ADD  dcoker/start.sh /usr/local/start.sh
 ADD  docker/config.ini /usr/local/config.ini
 
 
-// P2P port
+# P2P port
 EXPOSE 9876
 
-// RPC port
+# RPC port
 EXPOSE 8888
 
 ENTRYPOINT ["/usr/local/start.sh"]
