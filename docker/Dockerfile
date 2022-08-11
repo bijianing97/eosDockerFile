@@ -1,5 +1,5 @@
 FROM ubuntu:20.04
-MAINTAINER MandedwithHistoryPlugin
+LABEL version = "1.0" description = "Dockerfile for building a mandel eos with history_plugin"
 
 ENV WORK_PATH /usr/local
 
@@ -22,8 +22,21 @@ RUN cd $WORK_PATH && git clone https://github.com/bijianing97/mandel.git \
         && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release ..\
         && make -j$(nproc) package 
 
+ARG snapshot_url = https://snapshots-cdn.eossweden.org/main/2.0/snapshot-262010746.bin.tar.gz
+
+RUN  cd $WORK_PATH && cp $WORK_PATH/mandel/build/programs/nodeos $WORK_PATH    \
+        && wget $WORK_PATH ${snapshot_url} -O $WORK_PATH/snapshot.bin.tar.gz   \
+        && tar -zxvf $WORK_PATH/snapshot.bin.tar.gz -O $WORK_PATH/snapshot.bin \
+        && rm $WORK_PATH/snapshot.bin.tar.gz && mkdir eosio                    \
+
+ADD  dcoker/start.sh /usr/local/start.sh
+ADD  docker/config.ini /usr/local/config.ini
+
+
 // P2P port
 EXPOSE 9876
 
 // RPC port
 EXPOSE 8888
+
+ENTRYPOINT ["/usr/local/start.sh"]
