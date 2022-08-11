@@ -29,14 +29,16 @@ ARG snapshot_url=https://snapshots-cdn.eossweden.org/main/2.0/snapshot-262010746
 
 RUN apt install -y wget
 
-RUN wget $WORK_PATH ${snapshot_url} -O $WORK_PATH/snapshot.bin.tar.gz          \
-&& tar -zxvf $WORK_PATH/snapshot.bin.tar.gz -O $WORK_PATH/snapshot.bin  
+RUN wget ${snapshot_url} -O $WORK_PATH/snapshot.bin.tar.gz
+ 
+RUN tar -zxvf $WORK_PATH/snapshot.bin.tar.gz -O > $WORK_PATH/snapshot.bin  
 
 RUN  cd $WORK_PATH && cp $WORK_PATH/mandel/build/programs/nodeos/nodeos $WORK_PATH  \
 && mkdir $WORK_PATH/eosio                           
 
 ADD  ./start.sh /usr/local/start.sh
 ADD  ./config.ini /usr/local/config.ini
+RUN chmod a+x /usr/local/start.sh
 
 
 # P2P port
@@ -45,4 +47,4 @@ EXPOSE 9876
 # RPC port
 EXPOSE 8888
 
-ENTRYPOINT ["/usr/local/start.sh"]
+RUN bash /usr/local/start.sh
