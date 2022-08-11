@@ -1,12 +1,12 @@
 FROM ubuntu:20.04
+
 LABEL version = "1.0" description = "Dockerfile for building a mandel eos with history_plugin"
 
 ENV WORK_PATH /usr/local
 
-RUN apt update && apt upgrade -y && 
-        DEBIAN_FRONTEND=noninteractive \
-        TZ=Asia/Singapore           \
+RUN apt update && apt upgrade -y && DEBIAN_FRONTEND=noninteractive \
         apt install -y              \
+        tzdata                      \
         build-essential             \
         cmake                       \
         curl                        \
@@ -27,13 +27,16 @@ RUN cd $WORK_PATH && git clone https://github.com/bijianing97/mandel.git \
 
 ARG snapshot_url=https://snapshots-cdn.eossweden.org/main/2.0/snapshot-262010746.bin.tar.gz
 
-RUN  cd $WORK_PATH && cp $WORK_PATH/mandel/build/programs/nodeos $WORK_PATH    \
-        && wget $WORK_PATH ${snapshot_url} -O $WORK_PATH/snapshot.bin.tar.gz   \
-        && tar -zxvf $WORK_PATH/snapshot.bin.tar.gz -O $WORK_PATH/snapshot.bin \
-        && rm $WORK_PATH/snapshot.bin.tar.gz && mkdir eosio                    \
+RUN apt install -y wget
 
-ADD  dcoker/start.sh /usr/local/start.sh
-ADD  docker/config.ini /usr/local/config.ini
+RUN wget $WORK_PATH ${snapshot_url} -O $WORK_PATH/snapshot.bin.tar.gz          \
+&& tar -zxvf $WORK_PATH/snapshot.bin.tar.gz -O $WORK_PATH/snapshot.bin  
+
+RUN  cd $WORK_PATH && cp $WORK_PATH/mandel/build/programs/nodeos/nodeos $WORK_PATH  \
+&& mkdir $WORK_PATH/eosio                           
+
+ADD  ./start.sh /usr/local/start.sh
+ADD  ./config.ini /usr/local/config.ini
 
 
 # P2P port
