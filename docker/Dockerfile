@@ -20,7 +20,7 @@ RUN apt update && apt upgrade -y && DEBIAN_FRONTEND=noninteractive \
         pkg-config
 
 RUN cd $WORK_PATH && git clone https://github.com/bijianing97/leap.git \
-        && cd mandel && git checkout history_plugin_add &&               \
+        && cd leap && git checkout history_plugin_add &&               \
         git submodule update --init --recursive                          \
         && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release ..\
         && make -j$(nproc) package 
@@ -33,7 +33,7 @@ RUN wget ${snapshot_url} -O $WORK_PATH/snapshot.bin.tar.gz
  
 RUN tar -zxvf $WORK_PATH/snapshot.bin.tar.gz -O > $WORK_PATH/snapshot.bin  
 
-RUN  cd $WORK_PATH && cp $WORK_PATH/mandel/build/programs/nodeos/nodeos $WORK_PATH  \
+RUN  cd $WORK_PATH && cp $WORK_PATH/leap/build/programs/nodeos/nodeos $WORK_PATH  \
 && mkdir $WORK_PATH/eosio                           
 
 ADD  ./start.sh /usr/local/start.sh
