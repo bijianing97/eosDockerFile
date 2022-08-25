@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-LABEL version = "1.0" description = "Dockerfile for building a mandel eos with history_plugin"
+LABEL version = "1.0" description = "Dockerfile for building a leap eos with history_plugin"
 
 ENV WORK_PATH /usr/local
 
