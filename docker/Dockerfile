@@ -19,7 +19,7 @@ RUN apt update && apt upgrade -y && DEBIAN_FRONTEND=noninteractive \
         llvm-11-dev                 \
         pkg-config
 
-RUN cd $WORK_PATH && git clone https://github.com/bijianing97/mandel.git \
+RUN cd $WORK_PATH && git clone https://github.com/bijianing97/leap.git \
         && cd mandel && git checkout history_plugin_add &&               \
         git submodule update --init --recursive                          \
         && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release ..\
